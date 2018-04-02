@@ -1,8 +1,8 @@
-// storeが必要な情報を記述する
-// Controlledの役割を持つ
-import { combineReducers } from 'redux';
-import { CHANGE_NAME, CHANGE_AGE, INITIALIZE_FORM } from './actions';
-
+import { combineReducers } from 'redux'
+import {
+  CHANGE_NAME, CHANGE_AGE, INITIALIZE_FORM,
+  REQUEST_DATA, RECEIVE_DATA_SUCCESS, RECEIVE_DATA_FAILED
+} from './actions'
 
 const initialState = {
   form: {
@@ -10,8 +10,8 @@ const initialState = {
     age: '',
   },
   characters: {
-    isFetching: false,  // 非同期処理におけるアプリ側の状態把握手段
-    characterArray:[],
+    isFetching: false,
+    characterArray: [],
   },
 }
 
@@ -35,7 +35,23 @@ const formReducer = (state = initialState.form, action) => {
 }
 
 const charactersReducer = (state = initialState.characters, action) => {
-  switch(action.type) {
+  switch (action.type) {
+    case REQUEST_DATA:
+      return {
+        ...state,
+        isFetching: true,
+      }
+    case RECEIVE_DATA_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        characterArray: action.characterArray,
+      }
+    case RECEIVE_DATA_FAILED:
+      return {
+        ...state,
+        isFetching: false,
+      }
     default:
       return state
   }
@@ -44,6 +60,6 @@ const charactersReducer = (state = initialState.characters, action) => {
 const rootReducer = combineReducers({
   form: formReducer,
   characters: charactersReducer,
-});
+})
 
-export default rootReducer;
+export default rootReducer
